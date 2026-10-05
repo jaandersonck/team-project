@@ -10,7 +10,7 @@ This contract sets out shared expectations and commitments for how our team will
 ### Communication
 
 - We will use Discord for communication outside of class/lab. 
-- Every teammate agrees to respond to messages in at most [X] days. 
+- Every teammate agrees to respond to messages in at most 1 day. 
 - All communication will remain respectful, professional, and constructive.
 - Everyone commits to actively listening to all team members' ideas and giving everyone a chance to meaningfully contribute.
 
@@ -18,13 +18,6 @@ This contract sets out shared expectations and commitments for how our team will
 
 ### Attendance 
 - If a teammate won't be able to meet a deadline, or will miss tutorial or lecture, they should notify other team members in advance and be available, when appropriate, to provide input asynchronously.
-
----
-
-### [Other Categories of norms and expectations go here]
-
-* Based on your previous teamwork experiences, what other behaviours do you agree upon as a team?
-    - some examples of possible additional team norms and expectations are included in the sample team contract in case your team needs some help getting ideas for what else you want to include.
 
 ---
 
