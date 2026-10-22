@@ -1,4 +1,4 @@
-# Team Project
+# Git Repo Analyzer - CSC207 Team Project
 
 Please keep this up-to-date with information about your project throughout the term.
 
