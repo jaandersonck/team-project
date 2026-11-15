@@ -1,4 +1,4 @@
-package fake_data_access;
+package data_access;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,19 +6,20 @@ import java.util.Map;
 import use_case.login.LoginUserDataAccessInterface;
 import entity.User;
 
-public class FakeInMemoryGitHubAPIDataAccessObject implements LoginUserDataAccessInterface {
+// This is a fake DataAccessObject replicating the behaviour of the GitHubAPI
+
+public class FakeInMemoryGithubDataAccessObject implements LoginUserDataAccessInterface {
     private final Map<String, User> userMap = new HashMap<String, User>();
     private User currentUser;
 
     /**
-     * method for the fake dao only: map a token to a user
-     * @param token
-     * @param user
+     * Add a user to the fake repository by a token
+     * @param token anything
+     * @param user anything
      */
     public void addUser(String token, User user) {
         userMap.put(token, user);
     }
-
 
     @Override
     public boolean tokenValid(String token) {
@@ -27,7 +28,7 @@ public class FakeInMemoryGitHubAPIDataAccessObject implements LoginUserDataAcces
 
     @Override
     public void save(User user) {
-        
+
     }
 
     @Override
