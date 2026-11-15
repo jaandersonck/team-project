@@ -1,36 +1,36 @@
 package entity;
 
 /**
- * An entity representing a GitHub user.
+ * A simple entity representing a user. Users have a username and password..
  */
 public class User {
 
-    private final String username;
     private final String name;
-    private final String email;
+    private final String password;
 
     /**
-     * Creates a new user given profile info
-     * @param username the username
-     * @param name the display name
-     * @param email the user's email
+     * Creates a new user with the given non-empty name and non-empty password.
+     * @param name the username
+     * @param password the password
+     * @throws IllegalArgumentException if the password or name are empty
      */
-    public User(String username, String name, String email) {
-        this.username = username;
+    public User(String name, String password) {
+        if ("".equals(name)) {
+            throw new IllegalArgumentException("Username cannot be empty");
+        }
+        if ("".equals(password)) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
         this.name = name;
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
+        this.password = password;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPassword() {
+        return password;
     }
 
 }
