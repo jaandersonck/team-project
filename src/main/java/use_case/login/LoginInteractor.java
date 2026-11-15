@@ -17,25 +17,18 @@ public class LoginInteractor implements LoginInputBoundary {
 
     @Override
     public void execute(LoginInputData loginInputData) {
-        final String username = loginInputData.getUsername();
-        final String password = loginInputData.getPassword();
-        if (!userDataAccessObject.existsByName(username)) {
-            loginPresenter.prepareFailView(username + ": Account does not exist.");
+        final String token = loginInputData.getToken();
+        if (!userDataAccessObject.tokenValid(token)) {
+            loginPresenter.prepareFailView("No GitHub account found associated with token.");
         }
         else {
-            final String pwd = userDataAccessObject.get(username).getPassword();
-            if (!password.equals(pwd)) {
-                loginPresenter.prepareFailView("Incorrect password for \"" + username + "\".");
-            }
-            else {
+            final User user = userDataAccessObject.getUser(token);
+            userDataAccessObject.setCurrentUser(user);
 
-                final User user = userDataAccessObject.get(loginInputData.getUsername());
+            final LoginOutputData  loginOutputData = new LoginOutputData(user.getUsername(),
+                    user.getName(), user.getEmail());
 
-                userDataAccessObject.setCurrentUsername(username);
-
-                final LoginOutputData loginOutputData = new LoginOutputData(user.getName());
-                loginPresenter.prepareSuccessView(loginOutputData);
-            }
+            loginPresenter.prepareSuccessView(loginOutputData);
         }
     }
 }
