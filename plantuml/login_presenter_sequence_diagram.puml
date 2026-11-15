@@ -1,0 +1,44 @@
+@startuml
+skinparam dpi 300
+actor LoginUseCaseInteractor
+participant LoginPresenter as LP
+participant LoggedInViewModel as LVM
+participant LoggedInState as LS
+participant LoggedInView as LIV
+
+activate LP
+LoginUseCaseInteractor -> LP : prepareSuccessView(LoginOutputData)
+LP -> LVM : getState()
+activate LVM
+LVM --> LP : LoggedInState
+deactivate LVM
+
+LP -> LS : setUsername(response.getUsername())
+activate LS
+LS --> LP
+deactivate LS
+
+LP -> LVM : notifyStateChanged()
+activate LVM
+
+
+LVM -> LIV : stateChanged()
+activate LIV
+
+
+LIV -> LVM : getState()
+LVM --> LIV : LoggedInState
+
+LIV -> LIV : update UI from state
+
+LIV --> LVM
+deactivate LIV
+
+LVM --> LP
+deactivate LVM
+
+
+... Diagram continues with LoginViewModel and ViewManager updates...
+
+
+@enduml
