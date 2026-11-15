@@ -14,9 +14,17 @@ public class LoginState {
         return loginError;
     }
 
+    public boolean isStayLoggedIn() {
+        return stayLoggedIn;
+    }
+
     public void setToken(String token) { this.token = token; }
 
     public void setLoginError(String usernameError) {
         this.loginError = usernameError;
+    }
+
+    public void setStayLoggedIn(boolean stayLoggedIn) {
+        this.stayLoggedIn = stayLoggedIn;
     }
 }
