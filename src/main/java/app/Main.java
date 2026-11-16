@@ -9,7 +9,6 @@ public class Main {
                 .addLoginView()
                 .addLoggedInView()
                 .addLoginUseCase()
-                .addRestoreSessionUseCase()
                 .addLogoutUseCase()
                 .build();
 

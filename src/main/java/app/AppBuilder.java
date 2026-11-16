@@ -10,17 +10,12 @@ import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
-import interface_adapter.restore_session.RestoreSessionController;
-import interface_adapter.restore_session.RestoreSessionPresenter;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
-import use_case.restore_session.RestoreSessionInputBoundary;
-import use_case.restore_session.RestoreSessionInteractor;
-import use_case.restore_session.RestoreSessionOutputBoundary;
 import view.LoggedInView;
 import view.LoginView;
 import view.ViewManager;
@@ -34,8 +29,6 @@ public class AppBuilder {
     final UserFactory userFactory = new UserFactory();
     final ViewManagerModel viewManagerModel = new ViewManagerModel();
     ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
-
-    private RestoreSessionController restoreSessionController;
 
     // set which data access implementation to use, can be any
     // of the classes from the data_access package
@@ -80,23 +73,6 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addRestoreSessionUseCase() {
-        final RestoreSessionOutputBoundary restoreSessionPresenter =
-                new RestoreSessionPresenter(viewManagerModel,
-                                            loggedInViewModel,
-                                            loginViewModel
-                );
-        final RestoreSessionInputBoundary restoreSessionInteractor = new RestoreSessionInteractor(
-                userDataAccessObject, tokenDataAccessObject, restoreSessionPresenter);
-
-
-        // This use case does not have a view, will be triggered on app startup
-        // todo: restoreSessionController needs extensive testing for this to be justified.
-        this.restoreSessionController = new RestoreSessionController(restoreSessionInteractor);
-
-        return this;
-    }
-
     public AppBuilder addLogoutUseCase() {
         final LogoutOutputBoundary loginOutputBoundary = new LogoutPresenter(viewManagerModel,
                 loggedInViewModel);
@@ -117,8 +93,6 @@ public class AppBuilder {
 
         viewManagerModel.setState(LoginViewModel.VIEW_NAME);
         viewManagerModel.notifyViewChanged();
-
-        this.restoreSessionController.execute();
 
         return application;
     }
