@@ -41,9 +41,20 @@ public class RestoreSessionPresenter implements RestoreSessionOutputBoundary {
     }
 
     @Override
+    public void prepareNoTokenView() {
+        // switch to the login view, the user didn't save a session
+        this.viewManagerModel.setState(LoginViewModel.VIEW_NAME);
+        this.viewManagerModel.notifyViewChanged();
+    }
+
+    @Override
     public void prepareFailView(String error) {
         final LoginState loginState = loginViewModel.getState();
         loginState.setLoginError(error);
         loginViewModel.notifyStateChanged();
+
+        // switch to the login view, there was an error restoring a session
+        this.viewManagerModel.setState(LoginViewModel.VIEW_NAME);
+        this.viewManagerModel.notifyViewChanged();
     }
 }

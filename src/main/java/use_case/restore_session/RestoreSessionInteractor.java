@@ -1,31 +1,32 @@
 package use_case.restore_session;
 
 import entity.User;
-import use_case.login.LoginInputData;
-import use_case.login.LoginOutputData;
 
 public class RestoreSessionInteractor implements RestoreSessionInputBoundary {
-    private final RestoreSessionDataAccessInterface restoreSessionDataAccessObject;
+    private final RestoreSessionUserDataAccessInterface restoreSessionUserDataAccessObject;
+    private final RestoreSessionTokenDataAccessInterface restoreSessionTokenDataAccessObject;
     private final RestoreSessionOutputBoundary restoreSessionPresenter;
 
-    public RestoreSessionInteractor(RestoreSessionDataAccessInterface restoreSessionDataAccessObject,
-                           RestoreSessionOutputBoundary restoreSessionPresenter) {
-        this.restoreSessionDataAccessObject = restoreSessionDataAccessObject;
+    public RestoreSessionInteractor(RestoreSessionUserDataAccessInterface restoreSessionUserDataAccessObject,
+                                    RestoreSessionTokenDataAccessInterface restoreSessionTokenDataAccessObject,
+                                    RestoreSessionOutputBoundary restoreSessionPresenter) {
+        this.restoreSessionUserDataAccessObject = restoreSessionUserDataAccessObject;
+        this.restoreSessionTokenDataAccessObject = restoreSessionTokenDataAccessObject;
         this.restoreSessionPresenter = restoreSessionPresenter;
     }
 
     @Override
     public void execute(RestoreSessionInputData restoreSessionInputData) {
-        final String token = restoreSessionDataAccessObject.getToken();
+        final String token = restoreSessionTokenDataAccessObject.getToken();
 
-        if(token != null) {
+        if(!token.isEmpty()) {
             // token exists, check if valid
-            if (!restoreSessionDataAccessObject.tokenValid(token)) {
+            if (!restoreSessionUserDataAccessObject.tokenValid(token)) {
                 restoreSessionPresenter.prepareFailView("");
             } else {
                 // token exists and valid success
-                final User user = restoreSessionDataAccessObject.getUser(token);
-                restoreSessionDataAccessObject.setCurrentUser(user);
+                final User user = restoreSessionUserDataAccessObject.getUser(token);
+                restoreSessionUserDataAccessObject.setCurrentUser(user);
 
                 final RestoreSessionOutputData restoreSessionOutputData = new RestoreSessionOutputData(
                         user.getUsername(),

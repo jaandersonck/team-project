@@ -5,10 +5,12 @@ import java.util.Map;
 
 import use_case.login.LoginUserDataAccessInterface;
 import entity.User;
+import use_case.restore_session.RestoreSessionUserDataAccessInterface;
 
-// This is a fake DataAccessObject replicating the behaviour of the GitHubAPI
+// This is a fake DataAccessObject replicating the behaviour of the GitHubAPI.
 
-public class FakeInMemoryGithubDataAccessObject implements LoginUserDataAccessInterface {
+public class FakeInMemoryGithubDataAccessObject implements LoginUserDataAccessInterface,
+        RestoreSessionUserDataAccessInterface {
     private final Map<String, User> userMap = new HashMap<String, User>();
     private User currentUser;
 
@@ -45,4 +47,6 @@ public class FakeInMemoryGithubDataAccessObject implements LoginUserDataAccessIn
     public User getCurrentUser(User user) {
         return currentUser;
     }
+
+
 }

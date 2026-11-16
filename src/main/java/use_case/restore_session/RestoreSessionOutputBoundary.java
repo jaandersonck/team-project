@@ -11,6 +11,11 @@ public interface RestoreSessionOutputBoundary {
     void prepareSuccessView(RestoreSessionOutputData outputData);
 
     /**
+     * Prepares the no token view (not a failure) for the Restore Session use case.
+     */
+    void prepareNoTokenView();
+
+    /**
      * Prepares the failure view for the Restore Session use case.
      * @param errorMessage the explanation of the failure
      */

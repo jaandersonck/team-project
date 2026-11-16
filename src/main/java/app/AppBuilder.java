@@ -1,15 +1,21 @@
 package app;
 
 import data_access.FakeInMemoryGithubDataAccessObject;
+import data_access.JavaPrefsTokenDataAccessObject;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.restore_session.RestoreSessionController;
+import interface_adapter.restore_session.RestoreSessionPresenter;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
+import use_case.restore_session.RestoreSessionInputBoundary;
+import use_case.restore_session.RestoreSessionInteractor;
+import use_case.restore_session.RestoreSessionOutputBoundary;
 import view.LoggedInView;
 import view.LoginView;
 import view.ViewManager;
@@ -24,11 +30,16 @@ public class AppBuilder {
     final ViewManagerModel viewManagerModel = new ViewManagerModel();
     ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
+    private RestoreSessionController restoreSessionController;
+
     // set which data access implementation to use, can be any
     // of the classes from the data_access package
 
     // todo: THIS IS JUST A PLACEHOLDER!!!!!!!!!! NEED ACTUAL GITHUB API DATA ACCESS
     final FakeInMemoryGithubDataAccessObject userDataAccessObject = new FakeInMemoryGithubDataAccessObject();
+    final JavaPrefsTokenDataAccessObject tokenDataAccessObject =
+            new JavaPrefsTokenDataAccessObject("gh-repo-analyzer");
+
 
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
@@ -64,6 +75,23 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addRestoreSessionUseCase() {
+        final RestoreSessionOutputBoundary restoreSessionPresenter =
+                new RestoreSessionPresenter(viewManagerModel,
+                                            loggedInViewModel,
+                                            loginViewModel
+                );
+        final RestoreSessionInputBoundary restoreSessionInteractor = new RestoreSessionInteractor(
+                userDataAccessObject, tokenDataAccessObject, restoreSessionPresenter);
+
+
+        // This use case does not have a view, will be triggered on app startup
+        // todo: restoreSessionController needs extensive testing for this to be justified.
+        this.restoreSessionController = new RestoreSessionController(restoreSessionInteractor);
+
+        return this;
+    }
+
     public JFrame build() {
         final JFrame application = new JFrame("User Login Example");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -72,6 +100,8 @@ public class AppBuilder {
 
         viewManagerModel.setState(LoginViewModel.VIEW_NAME);
         viewManagerModel.notifyViewChanged();
+
+        this.restoreSessionController.execute();
 
         return application;
     }

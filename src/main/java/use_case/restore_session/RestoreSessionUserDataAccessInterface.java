@@ -3,16 +3,9 @@ package use_case.restore_session;
 import entity.User;
 
 /**
- * DAO interface for the Login Use Case.
+ * DAO interface for the Restore Session use case
  */
-public interface RestoreSessionDataAccessInterface {
-
-    /**
-     * Retrieve a saved session token
-     * @return a potentially valid authentication token
-     */
-    String getToken();
-
+public interface RestoreSessionUserDataAccessInterface {
     /**
      * Check if there's a user associated with the provided token
      * @param token the GitHub api token
