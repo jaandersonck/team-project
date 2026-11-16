@@ -38,7 +38,7 @@ public class RestoreSessionInteractor implements RestoreSessionInputBoundary {
             }
         } else {
             // no token exists
-            restoreSessionPresenter.prepareFailView("");
+            restoreSessionPresenter.prepareNoTokenView();
         }
     }
 }
