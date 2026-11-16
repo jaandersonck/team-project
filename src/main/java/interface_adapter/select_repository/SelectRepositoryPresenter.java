@@ -1,4 +1,9 @@
 package interface_adapter.select_repository;
 
-public class SelectRepositoryPresenter {
+import interface_adapter.select_repository.SelectRepositoryViewModel;
+import use_case.select_repository.SelectRepositoryOutputBoundary;
+import use_case.select_repository.SelectRepositoryOutputData;
+
+
+public class SelectRepositoryPresenter implements SelectRepositoryOutputBoundary {
 }
