@@ -70,13 +70,15 @@ GitHub repo analyzer allows members across a software development team to quickl
 ---
 ## Use Cases
 ### Use Case 1: Log in with a GitHub token
-- **Owner:**  · **Story:** US1
+- **Owner: Jack Anderson**  · **Story:** US1
+### Use Case 1.1: Restore a previous session
+**Owner: Jack Anderson**  · **Story:** US1
 ### Use Case 2: Select a repository
-- **Owner:**  · **Story:** US2
+- **Owner: Yusuke Ichiba**  · **Story:** US2
 ### Use Case 3: View directory ownership
-- **Owner:** · **Story:** US3
+- **Owner: Jason Luo** · **Story:** US3
 ### Use Case 4: View the commit graph
-- **Owner:** · **Story:** US4
+- **Owner: Taha Tahir** · **Story:** US4
 ### Use Case 5: Filter the commit graph by a time period
 - **Owner:**  · **Story:** US5
 ### Use Case 6: View open pull requests
@@ -86,8 +88,9 @@ GitHub repo analyzer allows members across a software development team to quickl
 ---
 ## Minimal Viable Product (MVP)
 | Team Member | MVP Use Case                    |
-| ----------- | ------------------------------- |
-|             | UC1: Log in with a GitHub token |
+| ----------- | ------------------------------- | 
+|             | UC1: Log in with a GitHub token   |
+|             | UC1.1: Log in with a GitHub token |
 |             | UC2: Select a repository        |
 |             | UC3: View directory ownership   |
 |             | UC4: View the commit graph      |
@@ -96,10 +99,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 
 ---
 ## Entities  
-### Entity 1
-
-### Entity 2  
-(Add additional entities as needed.)  
+### to be filled
 ---  
 ## API Usage  
 **API Name:**  GitHub API
