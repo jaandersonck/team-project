@@ -20,7 +20,7 @@ class LoginInteractorTest {
 
         // Begin
         LoginUserDataAccessInterface fakeAPI = userRepository;
-        LoginInputData inputData = new LoginInputData("paul_token_ssss");
+        LoginInputData inputData = new LoginInputData("paul_token_ssss", false);
 
         // This creates a successPresenter that tests whether the test case is as we expect.
         LoginOutputBoundary successPresenter = new LoginOutputBoundary() {
@@ -52,7 +52,7 @@ class LoginInteractorTest {
 
         // Begin
         LoginUserDataAccessInterface fakeAPI = userRepository;
-        LoginInputData inputData = new LoginInputData("not a valid token");
+        LoginInputData inputData = new LoginInputData("not a valid token", false);
 
         // This creates a presenter that tests whether the test case is as we expect.
         LoginOutputBoundary failurePresenter = new LoginOutputBoundary() {

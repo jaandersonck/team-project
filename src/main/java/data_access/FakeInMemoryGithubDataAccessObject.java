@@ -29,11 +29,6 @@ public class FakeInMemoryGithubDataAccessObject implements LoginUserDataAccessIn
     }
 
     @Override
-    public void save(User user) {
-
-    }
-
-    @Override
     public User getUser(String token) {
         return userMap.get(token);
     }
@@ -42,11 +37,4 @@ public class FakeInMemoryGithubDataAccessObject implements LoginUserDataAccessIn
     public void setCurrentUser(User user) {
         currentUser = user;
     }
-
-    @Override
-    public User getCurrentUser(User user) {
-        return currentUser;
-    }
-
-
 }

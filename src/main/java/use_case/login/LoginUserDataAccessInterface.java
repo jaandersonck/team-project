@@ -15,12 +15,6 @@ public interface LoginUserDataAccessInterface {
     boolean tokenValid(String token);
 
     /**
-     * Saves the user.
-     * @param user the user to save
-     */
-    void save(User user);
-
-    /**
      * Returns a user from the given token.
      * @param token the token to look up
      * @return the user associated with the provided token
@@ -29,5 +23,4 @@ public interface LoginUserDataAccessInterface {
 
     // Business logic state: who is currently using the app?
     void setCurrentUser(User user);
-    User getCurrentUser(User user);
 }

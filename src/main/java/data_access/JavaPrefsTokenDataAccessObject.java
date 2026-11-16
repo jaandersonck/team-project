@@ -1,9 +1,12 @@
 package data_access;
 import java.util.prefs.Preferences;
+
+import use_case.login.LoginTokenDataAccessInterface;
 import use_case.restore_session.RestoreSessionTokenDataAccessInterface;
 
 // Use java's builtin prefs storage for storing the user token.
-public class JavaPrefsTokenDataAccessObject implements RestoreSessionTokenDataAccessInterface {
+public class JavaPrefsTokenDataAccessObject implements RestoreSessionTokenDataAccessInterface,
+        LoginTokenDataAccessInterface {
     private final Preferences prefs;
 
     public JavaPrefsTokenDataAccessObject(String nodeName) {
@@ -13,5 +16,10 @@ public class JavaPrefsTokenDataAccessObject implements RestoreSessionTokenDataAc
     @Override
     public String getToken() {
         return prefs.get("token", "");
+    }
+
+    @Override
+    public void save(String token) {
+        prefs.put("token", token);
     }
 }

@@ -51,7 +51,8 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
                             final LoginState currentState = loginViewModel.getState();
 
                             loginController.execute(
-                                    currentState.getToken()
+                                    currentState.getToken(),
+                                    currentState.isStayLoggedIn()
                             );
                         }
                     }
