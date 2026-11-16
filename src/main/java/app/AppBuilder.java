@@ -22,6 +22,7 @@ import view.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -36,7 +37,7 @@ public class AppBuilder {
     // of the classes from the data_access package
 
     // todo: THIS IS JUST A PLACEHOLDER!!!!!!!!!! NEED ACTUAL GITHUB API DATA ACCESS
-    final FakeInMemoryGithubDataAccessObject userDataAccessObject = new FakeInMemoryGithubDataAccessObject();
+    final FakeInMemoryGithubDataAccessObject userDataAccessObject = new FakeInMemoryGithubDataAccessObject(new HashMap<>());
     final JavaPrefsTokenDataAccessObject tokenDataAccessObject =
             new JavaPrefsTokenDataAccessObject("gh-repo-analyzer");
 

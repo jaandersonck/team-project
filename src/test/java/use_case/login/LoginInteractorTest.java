@@ -1,9 +1,12 @@
 package use_case.login;
 
 import data_access.FakeInMemoryGithubDataAccessObject;
+import data_access.FakeInMemoryTokenDataAccessObject;
 import entity.UserFactory;
 import entity.User;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,11 +18,11 @@ class LoginInteractorTest {
         UserFactory factory = new UserFactory();
         User user = factory.create("paul100", "Paul", "paul@hotmail.com");
 
-        FakeInMemoryGithubDataAccessObject userRepository = new FakeInMemoryGithubDataAccessObject();
-        userRepository.addUser("paul_token_ssss", user);
+        LoginUserDataAccessInterface fakeAPI = new FakeInMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
 
         // Begin
-        LoginUserDataAccessInterface fakeAPI = userRepository;
+        LoginTokenDataAccessInterface tokenStorage = new FakeInMemoryTokenDataAccessObject();
         LoginInputData inputData = new LoginInputData("paul_token_ssss", false);
 
         // This creates a successPresenter that tests whether the test case is as we expect.
@@ -37,7 +40,7 @@ class LoginInteractorTest {
             }
         };
 
-        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, successPresenter);
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, successPresenter);
         interactor.execute(inputData);
     }
 
@@ -47,11 +50,11 @@ class LoginInteractorTest {
         UserFactory factory = new UserFactory();
         User user = factory.create("paul100", "Paul", "paul@hotmail.com");
 
-        FakeInMemoryGithubDataAccessObject userRepository = new FakeInMemoryGithubDataAccessObject();
-        userRepository.addUser("paul_token_ssss", user);
+        LoginUserDataAccessInterface fakeAPI = new FakeInMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
 
         // Begin
-        LoginUserDataAccessInterface fakeAPI = userRepository;
+        LoginTokenDataAccessInterface tokenStorage = new FakeInMemoryTokenDataAccessObject();
         LoginInputData inputData = new LoginInputData("not a valid token", false);
 
         // This creates a presenter that tests whether the test case is as we expect.
@@ -68,7 +71,7 @@ class LoginInteractorTest {
             }
         };
 
-        LoginInputBoundary interactor = new LoginInteractor(userRepository, failurePresenter);
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, failurePresenter);
         interactor.execute(inputData);
     }
 }

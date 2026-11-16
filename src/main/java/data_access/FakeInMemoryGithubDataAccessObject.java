@@ -11,16 +11,15 @@ import use_case.restore_session.RestoreSessionUserDataAccessInterface;
 
 public class FakeInMemoryGithubDataAccessObject implements LoginUserDataAccessInterface,
         RestoreSessionUserDataAccessInterface {
-    private final Map<String, User> userMap = new HashMap<String, User>();
+    private final Map<String, User> userMap;
     private User currentUser;
 
     /**
-     * Add a user to the fake repository by a token
-     * @param token anything
-     * @param user anything
+     * Creates a fake repository with the given users.
+     * @param userMap a map from token to the user associated with that token
      */
-    public void addUser(String token, User user) {
-        userMap.put(token, user);
+    public FakeInMemoryGithubDataAccessObject(Map<String, User> userMap) {
+        this.userMap = new HashMap<String, User>(userMap);
     }
 
     @Override
