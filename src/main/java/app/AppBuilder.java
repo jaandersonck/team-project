@@ -1,38 +1,28 @@
 package app;
 
-import data_access.FileUserDataAccessObject;
+import data_access.FakeInMemoryGithubDataAccessObject;
+import data_access.JavaPrefsTokenDataAccessObject;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.logged_in.ChangePasswordController;
-import interface_adapter.logged_in.ChangePasswordPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.logout.LogoutController;
-import interface_adapter.logout.LogoutPresenter;
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupPresenter;
-import interface_adapter.signup.SignupViewModel;
-import use_case.change_password.ChangePasswordInputBoundary;
-import use_case.change_password.ChangePasswordInteractor;
-import use_case.change_password.ChangePasswordOutputBoundary;
+import interface_adapter.restore_session.RestoreSessionController;
+import interface_adapter.restore_session.RestoreSessionPresenter;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
-import use_case.logout.LogoutInputBoundary;
-import use_case.logout.LogoutInteractor;
-import use_case.logout.LogoutOutputBoundary;
-import use_case.signup.SignupInputBoundary;
-import use_case.signup.SignupInteractor;
-import use_case.signup.SignupOutputBoundary;
+import use_case.restore_session.RestoreSessionInputBoundary;
+import use_case.restore_session.RestoreSessionInteractor;
+import use_case.restore_session.RestoreSessionOutputBoundary;
 import view.LoggedInView;
 import view.LoginView;
-import view.SignupView;
 import view.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -41,14 +31,17 @@ public class AppBuilder {
     final ViewManagerModel viewManagerModel = new ViewManagerModel();
     ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
+    private RestoreSessionController restoreSessionController;
+
     // set which data access implementation to use, can be any
     // of the classes from the data_access package
 
-    // DAO version using local file storage
-    final FileUserDataAccessObject userDataAccessObject = new FileUserDataAccessObject("users.csv", userFactory);
+    // todo: THIS IS JUST A PLACEHOLDER!!!!!!!!!! NEED ACTUAL GITHUB API DATA ACCESS
+    final FakeInMemoryGithubDataAccessObject userDataAccessObject = new FakeInMemoryGithubDataAccessObject(new HashMap<>());
+    final JavaPrefsTokenDataAccessObject tokenDataAccessObject =
+            new JavaPrefsTokenDataAccessObject("gh-repo-analyzer");
 
-    private SignupView signupView;
-    private SignupViewModel signupViewModel;
+
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private LoggedInView loggedInView;
@@ -56,13 +49,6 @@ public class AppBuilder {
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
-    }
-
-    public AppBuilder addSignupView() {
-        signupViewModel = new SignupViewModel();
-        signupView = new SignupView(signupViewModel);
-        cardPanel.add(signupView, SignupViewModel.VIEW_NAME);
-        return this;
     }
 
     public AppBuilder addLoginView() {
@@ -79,52 +65,31 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addSignupUseCase() {
-        final SignupOutputBoundary signupOutputBoundary = new SignupPresenter(viewManagerModel,
-                signupViewModel, loginViewModel);
-        final SignupInputBoundary userSignupInteractor = new SignupInteractor(
-                userDataAccessObject, signupOutputBoundary, userFactory);
-
-        SignupController controller = new SignupController(userSignupInteractor);
-        signupView.setSignupController(controller);
-        return this;
-    }
-
     public AppBuilder addLoginUseCase() {
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
                 loggedInViewModel, loginViewModel);
         final LoginInputBoundary loginInteractor = new LoginInteractor(
-                userDataAccessObject, loginOutputBoundary);
+                userDataAccessObject, tokenDataAccessObject, loginOutputBoundary);
 
         LoginController loginController = new LoginController(loginInteractor);
         loginView.setLoginController(loginController);
         return this;
     }
 
-    public AppBuilder addChangePasswordUseCase() {
-        final ChangePasswordOutputBoundary changePasswordOutputBoundary = new ChangePasswordPresenter(loggedInViewModel);
+    public AppBuilder addRestoreSessionUseCase() {
+        final RestoreSessionOutputBoundary restoreSessionPresenter =
+                new RestoreSessionPresenter(viewManagerModel,
+                                            loggedInViewModel,
+                                            loginViewModel
+                );
+        final RestoreSessionInputBoundary restoreSessionInteractor = new RestoreSessionInteractor(
+                userDataAccessObject, tokenDataAccessObject, restoreSessionPresenter);
 
-        final ChangePasswordInputBoundary changePasswordInteractor =
-                new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
 
-        ChangePasswordController changePasswordController = new ChangePasswordController(changePasswordInteractor);
-        loggedInView.setChangePasswordController(changePasswordController);
-        return this;
-    }
+        // This use case does not have a view, will be triggered on app startup
+        // todo: restoreSessionController needs extensive testing for this to be justified.
+        this.restoreSessionController = new RestoreSessionController(restoreSessionInteractor);
 
-    /**
-     * Adds the Logout Use Case to the application.
-     * @return this builder
-     */
-    public AppBuilder addLogoutUseCase() {
-        final LogoutOutputBoundary logoutOutputBoundary = new LogoutPresenter(viewManagerModel,
-                loggedInViewModel, loginViewModel);
-
-        final LogoutInputBoundary logoutInteractor =
-                new LogoutInteractor(userDataAccessObject, logoutOutputBoundary);
-
-        final LogoutController logoutController = new LogoutController(logoutInteractor);
-        loggedInView.setLogoutController(logoutController);
         return this;
     }
 
@@ -134,8 +99,10 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(SignupViewModel.VIEW_NAME);
+        viewManagerModel.setState(LoginViewModel.VIEW_NAME);
         viewManagerModel.notifyViewChanged();
+
+        this.restoreSessionController.execute();
 
         return application;
     }

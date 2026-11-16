@@ -8,26 +8,19 @@ import entity.User;
 public interface LoginUserDataAccessInterface {
 
     /**
-     * Checks if the given username exists.
-     * @param username the username to look for
-     * @return true if a user with the given username exists; false otherwise
+     * Check if there's a user associated with the provided token
+     * @param token the GitHub api token
+     * @return true if a user with the given token exists; false otherwise
      */
-    boolean existsByName(String username);
+    boolean tokenValid(String token);
 
     /**
-     * Saves the user.
-     * @param user the user to save
+     * Returns a user from the given token.
+     * @param token the token to look up
+     * @return the user associated with the provided token
      */
-    void save(User user);
+    User getUser(String token);
 
-    /**
-     * Returns the user with the given username.
-     * @param username the username to look up
-     * @return the user with the given username
-     */
-    User get(String username);
-
-    void setCurrentUsername(String name);
-
-    String getCurrentUsername();
+    // Business logic state: who is currently using the app?
+    void setCurrentUser(User user);
 }

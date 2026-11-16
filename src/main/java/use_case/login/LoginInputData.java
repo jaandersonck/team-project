@@ -5,20 +5,16 @@ package use_case.login;
  */
 public class LoginInputData {
 
-    private final String username;
-    private final String password;
+    private final String token;
+    private final boolean stayLoggedIn;
 
-    public LoginInputData(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public LoginInputData(String token, boolean stayLoggedIn) {
+        this.token = token;
+        this.stayLoggedIn = stayLoggedIn;
     }
 
-    String getUsername() {
-        return username;
+    String getToken() {
+        return token;
     }
-
-    String getPassword() {
-        return password;
-    }
-
+    boolean isStayLoggedIn() { return stayLoggedIn; }
 }

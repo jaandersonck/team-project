@@ -6,6 +6,8 @@ import interface_adapter.login.LoginViewModel;
 
 import interface_adapter.login.LoginViewModelListener;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -19,13 +21,11 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
 
     private final LoginViewModel loginViewModel;
 
-    private final JTextField usernameInputField = new JTextField(15);
+    private final JTextField tokenInputField = new JTextField(15);
+    private final JCheckBox stayLoggedInCheckBox = new JCheckBox("Stay logged in");
     private final JLabel loginErrorField = new JLabel();
 
-    private final JPasswordField passwordInputField = new JPasswordField(15);
-
     private final JButton logIn;
-    private final JButton cancel;
     private LoginController loginController = null;
 
     public LoginView(LoginViewModel loginViewModel) {
@@ -33,19 +33,16 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
         this.loginViewModel = loginViewModel;
         this.loginViewModel.addListener(this);
 
-        final JLabel title = new JLabel("Login Screen");
+        final JLabel title = new JLabel("GitHub Repo Analyzer");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         final LabelTextPanel usernameInfo = new LabelTextPanel(
-                new JLabel("Username"), usernameInputField);
-        final LabelTextPanel passwordInfo = new LabelTextPanel(
-                new JLabel("Password"), passwordInputField);
+                new JLabel("Token"), tokenInputField);
 
         final JPanel buttons = new JPanel();
-        logIn = new JButton("log in");
+        logIn = new JButton("Log In");
         buttons.add(logIn);
-        cancel = new JButton("cancel");
-        buttons.add(cancel);
+        buttons.add(stayLoggedInCheckBox);
 
         logIn.addActionListener(
                 new ActionListener() {
@@ -54,21 +51,19 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
                             final LoginState currentState = loginViewModel.getState();
 
                             loginController.execute(
-                                    currentState.getUsername(),
-                                    currentState.getPassword()
+                                    currentState.getToken(),
+                                    currentState.isStayLoggedIn()
                             );
                         }
                     }
                 }
         );
 
-        cancel.addActionListener(this);
-
-        usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
+        tokenInputField.getDocument().addDocumentListener(new DocumentListener() {
 
             private void documentListenerHelper() {
                 final LoginState currentState = loginViewModel.getState();
-                currentState.setUsername(usernameInputField.getText());
+                currentState.setToken(tokenInputField.getText());
                 loginViewModel.setState(currentState);
             }
 
@@ -85,39 +80,22 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
             @Override
             public void changedUpdate(DocumentEvent e) {
                 documentListenerHelper();
+            }
+        });
+
+        stayLoggedInCheckBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                final LoginState currentState = loginViewModel.getState();
+                currentState.setStayLoggedIn(stayLoggedInCheckBox.isSelected());
             }
         });
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
-
-            private void documentListenerHelper() {
-                final LoginState currentState = loginViewModel.getState();
-                currentState.setPassword(new String(passwordInputField.getPassword()));
-                loginViewModel.setState(currentState);
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-        });
-
         this.add(title);
         this.add(usernameInfo);
         this.add(loginErrorField);
-        this.add(passwordInfo);
         this.add(buttons);
     }
 
@@ -136,7 +114,7 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
     }
 
     private void setFields(LoginState state) {
-        usernameInputField.setText(state.getUsername());
+        tokenInputField.setText(state.getToken());
     }
 
     public void setLoginController(LoginController loginController) {
