@@ -74,4 +74,70 @@ class LoginInteractorTest {
         LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, failurePresenter);
         interactor.execute(inputData);
     }
+
+
+    @Test
+    void stayLoggedInSavesTokenTest() {
+        // Setup the conditions of a fake github api
+        UserFactory factory = new UserFactory();
+        User user = factory.create("paul100", "Paul", "paul@hotmail.com");
+
+        LoginUserDataAccessInterface fakeAPI = new FakeInMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
+
+        // Begin
+        // Kept as the concrete type so the test can read back the saved token.
+        FakeInMemoryTokenDataAccessObject tokenStorage = new FakeInMemoryTokenDataAccessObject();
+        LoginInputData inputData = new LoginInputData("paul_token_ssss", true);
+
+        LoginOutputBoundary successPresenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                assertEquals("paul100", user.getUsername());
+            }
+
+            @Override
+            public void prepareFailView(String error) {
+                fail("Use case failure is unexpected.");
+            }
+        };
+
+        // execute login with save session checked, we should be saving to the token store
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, successPresenter);
+        interactor.execute(inputData);
+
+        assertEquals("paul_token_ssss", tokenStorage.getToken());
+    }
+
+    @Test
+    void testNoSaveToken() {
+        // Setup the conditions of a fake github api
+        UserFactory factory = new UserFactory();
+        User user = factory.create("paul100", "Paul", "paul@hotmail.com");
+
+        LoginUserDataAccessInterface fakeAPI = new FakeInMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
+
+        // Begin
+        // Kept as the concrete type so the test can read back the saved token.
+        FakeInMemoryTokenDataAccessObject tokenStorage = new FakeInMemoryTokenDataAccessObject();
+        LoginInputData inputData = new LoginInputData("paul_token_ssss", false);
+
+        LoginOutputBoundary successPresenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                assertEquals("paul100", user.getUsername());
+            }
+
+            @Override
+            public void prepareFailView(String error) {
+                fail("Use case failure is unexpected.");
+            }
+        };
+
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, successPresenter);
+        interactor.execute(inputData);
+
+        assertEquals("", tokenStorage.getToken());
+    }
 }
