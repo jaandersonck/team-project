@@ -32,7 +32,7 @@ public class LoginInteractor implements LoginInputBoundary {
                     user.getName(), user.getEmail());
 
             if(loginInputData.isStayLoggedIn()) {
-
+                tokenDataAccessObject.save(token);
             }
 
             loginPresenter.prepareSuccessView(loginOutputData);
