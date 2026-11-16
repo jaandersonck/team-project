@@ -9,5 +9,4 @@ public interface LogoutOutputBoundary {
      * @param outputData the output data
      */
     void prepareSuccessView(LogoutOutputData outputData);
-
 }

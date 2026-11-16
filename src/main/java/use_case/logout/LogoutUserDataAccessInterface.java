@@ -1,19 +1,14 @@
 package use_case.logout;
 
+import entity.User;
+
 /**
  * DAO interface for the Logout Use Case.
  */
 public interface LogoutUserDataAccessInterface {
-
     /**
-     * Returns the username of the current user of the application.
-     * @return the username of the current user
+     * Define who is operating the program
+     * @param user the new current User
      */
-    String getCurrentUsername();
-
-    /**
-     * Sets the username indicating who is the current user of the application.
-     * @param username the new current username
-     */
-    void setCurrentUsername(String username);
+    void setCurrentUser(User user);
 }

@@ -10,6 +10,7 @@ public class Main {
                 .addLoggedInView()
                 .addLoginUseCase()
                 .addRestoreSessionUseCase()
+                .addLogoutUseCase()
                 .build();
 
         application.pack();

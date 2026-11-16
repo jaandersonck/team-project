@@ -8,11 +8,16 @@ import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.logout.LogoutController;
+import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.restore_session.RestoreSessionController;
 import interface_adapter.restore_session.RestoreSessionPresenter;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
+import use_case.logout.LogoutInputBoundary;
+import use_case.logout.LogoutInteractor;
+import use_case.logout.LogoutOutputBoundary;
 import use_case.restore_session.RestoreSessionInputBoundary;
 import use_case.restore_session.RestoreSessionInteractor;
 import use_case.restore_session.RestoreSessionOutputBoundary;
@@ -89,6 +94,18 @@ public class AppBuilder {
         // todo: restoreSessionController needs extensive testing for this to be justified.
         this.restoreSessionController = new RestoreSessionController(restoreSessionInteractor);
 
+        return this;
+    }
+
+    public AppBuilder addLogoutUseCase() {
+        final LogoutOutputBoundary loginOutputBoundary = new LogoutPresenter(viewManagerModel,
+                loggedInViewModel);
+        final LogoutInputBoundary logoutInteractor = new LogoutInteractor(
+                userDataAccessObject, tokenDataAccessObject, loginOutputBoundary);
+
+        LogoutController logoutController = new LogoutController(logoutInteractor);
+        // todo: inject the logout controller into the logged in view (doesn't exist yet)
+//        loginView.setLoginController(loginController);
         return this;
     }
 
