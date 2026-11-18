@@ -17,4 +17,6 @@ public class InMemoryTokenDataAccessObject implements LoginTokenDataAccessInterf
     public void save(String token) {
         this.token = token;
     }
+
+    public String getToken() { return token; }
 }
