@@ -15,14 +15,26 @@ public class LoginOutputData {
         this.email = email;
     }
 
+    /**
+     * Returns the GitHub username of the logged-in user.
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Returns the display name of the logged-in user.
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the email address of the logged-in user.
+     * @return the email
+     */
     public String getEmail() {
         return email;
     }
