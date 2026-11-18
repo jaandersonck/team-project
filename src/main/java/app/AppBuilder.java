@@ -1,15 +1,23 @@
 package app;
 
+import data_access.InMemoryGithubDataAccessObject;
+import data_access.InMemoryTokenDataAccessObject;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginPresenter;
+import interface_adapter.login.LoginViewModel;
+import use_case.login.LoginInputBoundary;
+import use_case.login.LoginInteractor;
+import use_case.login.LoginOutputBoundary;
+import view.LoginView;
 import view.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
-// This file was taken from github.com/csc207-2026f-uoft/ca-login
-// it has been gutted and left as an example for future implementations
-// todo: wire in this file with our views and use cases, once they exist
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
@@ -17,36 +25,37 @@ public class AppBuilder {
     final ViewManagerModel viewManagerModel = new ViewManagerModel();
     ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
-    // set which data access implementation to use, can be any
-    // of the classes from the data_access package
-    // final FileUserDataAccessObject userDataAccessObject = new FileUserDataAccessObject("users.csv", userFactory);
+    // TODO: THESE ARE TEMPORARY, EFFECTIVELY USELESS DATA ACCESS OBJECTS, NEED TO BE REPLACED WITH REAL
+    final InMemoryGithubDataAccessObject userDataAccessObject = new InMemoryGithubDataAccessObject(
+            Map.of("PAULTOKEN", userFactory.create("paul1024", "paul", "paul@example.com"))
+    );
+    final InMemoryTokenDataAccessObject tokenDataAccessObject = new InMemoryTokenDataAccessObject();
 
-    // private SignupView signupView;
+    private LoginViewModel loginViewModel;
+    private LoggedInViewModel loggedInViewModel; // todo: this is a placeholder
+    private LoginView loginView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
 
-    // Example from ca-login, adding a view
-    // public AppBuilder addSignupView() {
-    //     signupViewModel = new SignupViewModel();
-    //     signupView = new SignupView(signupViewModel);
-    //     cardPanel.add(signupView, SignupViewModel.VIEW_NAME);
-    //     return this;
-    // }
+    public AppBuilder addLoginView() {
+        loginViewModel = new LoginViewModel();
+        loginView = new LoginView(loginViewModel);
+        cardPanel.add(loginView, LoginViewModel.VIEW_NAME);
+        return this;
+    }
 
-    // Example from ca-login, adding a use case
-    // public AppBuilder addChangePasswordUseCase() {
-    //     final ChangePasswordOutputBoundary changePasswordOutputBoundary =
-    //             new ChangePasswordPresenter(loggedInViewModel);
-    //
-    //     final ChangePasswordInputBoundary changePasswordInteractor =
-    //             new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
-    //
-    //     ChangePasswordController changePasswordController = new ChangePasswordController(changePasswordInteractor);
-    //     loggedInView.setChangePasswordController(changePasswordController);
-    //     return this;
-    // }
+    public AppBuilder addLoginUseCase() {
+        final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
+                loggedInViewModel, loginViewModel);
+        final LoginInputBoundary loginInteractor = new LoginInteractor(
+                userDataAccessObject, tokenDataAccessObject, loginOutputBoundary);
+
+        LoginController loginController = new LoginController(loginInteractor);
+        loginView.setLoginController(loginController);
+        return this;
+    }
 
     public JFrame build() {
         final JFrame application = new JFrame("User Login Example");
@@ -54,8 +63,8 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        // set the starting view here, e.g.
-        // viewManagerModel.setState(SignupViewModel.VIEW_NAME);
+        // Set the starting view
+        viewManagerModel.setState(LoginViewModel.VIEW_NAME);
         viewManagerModel.notifyViewChanged();
 
         return application;

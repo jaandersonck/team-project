@@ -7,6 +7,8 @@ public class Main {
         AppBuilder appBuilder = new AppBuilder();
         JFrame application = appBuilder
                 // add views and use cases here
+                .addLoginView()
+                .addLoginUseCase()
                 .build();
 
         application.pack();
