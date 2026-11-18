@@ -21,6 +21,9 @@ public interface LoginUserDataAccessInterface {
      */
     User getUser(String token);
 
-    // Business logic state: who is currently using the app?
+    /**
+     * Sets the user who is currently using the app.
+     * @param user the user to mark as logged in
+     */
     void setCurrentUser(User user);
 }

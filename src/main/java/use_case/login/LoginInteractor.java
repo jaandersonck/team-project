@@ -18,6 +18,10 @@ public class LoginInteractor implements LoginInputBoundary {
         this.loginPresenter = loginOutputBoundary;
     }
 
+    /**
+     * Executes the login use case.
+     * @param loginInputData the input data
+     */
     @Override
     public void execute(LoginInputData loginInputData) {
         final String token = loginInputData.getToken();
