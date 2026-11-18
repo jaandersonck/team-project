@@ -1,4 +1,5 @@
 package app;
+
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import view.ViewManager;
@@ -18,36 +19,34 @@ public class AppBuilder {
 
     // set which data access implementation to use, can be any
     // of the classes from the data_access package
+    // final FileUserDataAccessObject userDataAccessObject = new FileUserDataAccessObject("users.csv", userFactory);
 
-    // DAO version using local file storage
-//    final FileUserDataAccessObject userDataAccessObject = new FileUserDataAccessObject("users.csv", userFactory);
-
-//    private SignupView signupView;
+    // private SignupView signupView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
 
     // Example from ca-login, adding a view
-//    public AppBuilder addSignupView() {
-//        signupViewModel = new SignupViewModel();
-//        signupView = new SignupView(signupViewModel);
-//        cardPanel.add(signupView, SignupViewModel.VIEW_NAME);
-//        return this;
-//    }
+    // public AppBuilder addSignupView() {
+    //     signupViewModel = new SignupViewModel();
+    //     signupView = new SignupView(signupViewModel);
+    //     cardPanel.add(signupView, SignupViewModel.VIEW_NAME);
+    //     return this;
+    // }
 
     // Example from ca-login, adding a use case
-//    public AppBuilder addChangePasswordUseCase() {
-//        final ChangePasswordOutputBoundary changePasswordOutputBoundary = new ChangePasswordPresenter(loggedInViewModel);
-//
-//        final ChangePasswordInputBoundary changePasswordInteractor =
-//                new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
-//
-//        ChangePasswordController changePasswordController = new ChangePasswordController(changePasswordInteractor);
-//        loggedInView.setChangePasswordController(changePasswordController);
-//        return this;
-//    }
-
+    // public AppBuilder addChangePasswordUseCase() {
+    //     final ChangePasswordOutputBoundary changePasswordOutputBoundary =
+    //             new ChangePasswordPresenter(loggedInViewModel);
+    //
+    //     final ChangePasswordInputBoundary changePasswordInteractor =
+    //             new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
+    //
+    //     ChangePasswordController changePasswordController = new ChangePasswordController(changePasswordInteractor);
+    //     loggedInView.setChangePasswordController(changePasswordController);
+    //     return this;
+    // }
 
     public JFrame build() {
         final JFrame application = new JFrame("User Login Example");
@@ -55,11 +54,10 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(SignupViewModel.VIEW_NAME);
+        // set the starting view here, e.g.
+        // viewManagerModel.setState(SignupViewModel.VIEW_NAME);
         viewManagerModel.notifyViewChanged();
 
         return application;
     }
-
-
 }
