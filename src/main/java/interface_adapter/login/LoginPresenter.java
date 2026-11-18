@@ -22,6 +22,10 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loginViewModel = loginViewModel;
     }
 
+    /**
+     * Prepares the success view for the Login Use Case by clearing the login view's state.
+     * @param response the output data
+     */
     @Override
     public void prepareSuccessView(LoginOutputData response) {
         // Login was successful, we can move onto the 'logged in view'
@@ -41,6 +45,10 @@ public class LoginPresenter implements LoginOutputBoundary {
 //        this.viewManagerModel.notifyViewChanged();
     }
 
+    /**
+     * Prepares the failure view for the Login Use Case by showing the error on the login view.
+     * @param error the explanation of the failure
+     */
     @Override
     public void prepareFailView(String error) {
         final LoginState loginState = loginViewModel.getState();

@@ -107,6 +107,9 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
         System.out.println("Click " + evt.getActionCommand());
     }
 
+    /**
+     * The login state was updated; refresh the token field and error message, if there is one.
+     */
     @Override
     public void stateChanged() {
         setFields(loginViewModel.getState());
@@ -117,6 +120,10 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
         tokenInputField.setText(state.getToken());
     }
 
+    /**
+     * Sets the controller used to run the login use case when Log In is clicked.
+     * @param loginController the login controller
+     */
     public void setLoginController(LoginController loginController) {
         this.loginController = loginController;
     }

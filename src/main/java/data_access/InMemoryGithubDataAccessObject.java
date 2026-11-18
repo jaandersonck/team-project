@@ -6,8 +6,9 @@ import java.util.Map;
 import use_case.login.LoginUserDataAccessInterface;
 import entity.User;
 
-// This is a fake DataAccessObject replicating the behaviour of the GitHubAPI.
-
+/**
+ * A fake DataAccessObject replicating the behaviour of the GitHub API.
+ */
 public class InMemoryGithubDataAccessObject implements LoginUserDataAccessInterface {
     private final Map<String, User> userMap;
     private User currentUser;

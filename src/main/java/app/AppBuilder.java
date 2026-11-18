@@ -39,6 +39,10 @@ public class AppBuilder {
         cardPanel.setLayout(cardLayout);
     }
 
+    /**
+     * Creates the login view and its view model and adds it to the card panel.
+     * @return this builder
+     */
     public AppBuilder addLoginView() {
         loginViewModel = new LoginViewModel();
         loginView = new LoginView(loginViewModel);
@@ -46,6 +50,11 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Wires up the login presenter, interactor and controller, and connects the controller to the login view.
+     * Must be called after {@link #addLoginView()}.
+     * @return this builder
+     */
     public AppBuilder addLoginUseCase() {
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
                 loggedInViewModel, loginViewModel);
@@ -57,6 +66,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Builds the application window, starting on the login view.
+     * @return the application frame
+     */
     public JFrame build() {
         final JFrame application = new JFrame("User Login Example");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

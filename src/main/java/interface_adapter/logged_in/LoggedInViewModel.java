@@ -1,5 +1,7 @@
 package interface_adapter.logged_in;
 
-// PLACEHOLDER
+/**
+ * The View Model for the Logged In View. PLACEHOLDER.
+ */
 public class LoggedInViewModel {
 }
