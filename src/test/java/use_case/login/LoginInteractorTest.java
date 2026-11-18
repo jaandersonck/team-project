@@ -1,3 +1,8 @@
+// Example test from github.com/csc207-2026f-uoft/ca-login, kept as a reference
+// for how to structure use case tests (fake data access, anonymous presenters).
+// It uses the old username/password login, so it won't compile against our code.
+// Maven only compiles src/, so this file is never built.
+
 package use_case.login;
 
 import data_access.InMemoryUserDataAccessObject;
@@ -36,7 +41,6 @@ class LoginInteractorTest {
         LoginInputBoundary interactor = new LoginInteractor(userRepository, successPresenter);
         interactor.execute(inputData);
     }
-
 
     @Test
     void failurePasswordMismatchTest() {

@@ -1,14 +1,13 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
-
 import interface_adapter.ViewManagerModelListener;
+
 import javax.swing.*;
 import java.awt.*;
 
-
 /**
- * The View Manager for the program. It listens for property change events
+ * The View Manager for the program. It listens for view changes
  * in the ViewManagerModel and updates which View should be visible.
  */
 public class ViewManager implements ViewManagerModelListener {
@@ -22,7 +21,6 @@ public class ViewManager implements ViewManagerModelListener {
         this.viewManagerModel = viewManagerModel;
         this.viewManagerModel.addListener(this);
     }
-
 
     @Override
     public void viewChanged() {
