@@ -1,4 +1,4 @@
-package Serialization;
+package interfaces;
 
 public interface Serializable {
     public String serialize();
