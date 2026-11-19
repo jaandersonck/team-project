@@ -1,6 +1,6 @@
-package ProgramInfo;
+package entity;
 
-import GitRepresentation.CommitTree;
+import entity.CommitTree;
 
 public class TreeManager {
     private CommitTree gitTreePure;

@@ -1,4 +1,4 @@
-package GitRepresentation;
+package entity;
 
 import java.util.ArrayList;
 
