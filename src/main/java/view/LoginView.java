@@ -6,8 +6,6 @@ import interface_adapter.login.LoginViewModel;
 
 import interface_adapter.login.LoginViewModelListener;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -63,7 +61,8 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
 
             private void documentListenerHelper() {
                 final LoginState currentState = loginViewModel.getState();
-                currentState.setToken(tokenInputField.getText());
+                // trim whitespace and line breaks that may show up when copy paste
+                currentState.setToken(tokenInputField.getText().trim());
                 loginViewModel.setState(currentState);
             }
 
@@ -83,9 +82,9 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
             }
         });
 
-        stayLoggedInCheckBox.addChangeListener(new ChangeListener() {
+        stayLoggedInCheckBox.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 final LoginState currentState = loginViewModel.getState();
                 currentState.setStayLoggedIn(stayLoggedInCheckBox.isSelected());
             }
@@ -118,6 +117,7 @@ public class LoginView extends JPanel implements ActionListener, LoginViewModelL
 
     private void setFields(LoginState state) {
         tokenInputField.setText(state.getToken());
+        stayLoggedInCheckBox.setSelected(state.isStayLoggedIn());
     }
 
     /**

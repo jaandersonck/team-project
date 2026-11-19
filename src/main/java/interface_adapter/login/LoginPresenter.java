@@ -34,6 +34,7 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loginViewModel.setState(new LoginState());
         this.loginViewModel.notifyStateChanged();
 
+        System.out.println("Login success");
 
         // todo: configure logged in view view and update its viewmodel/state
         // eg. (ca-login)

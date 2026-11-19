@@ -32,7 +32,7 @@ public class AppBuilder {
     final InMemoryTokenDataAccessObject tokenDataAccessObject = new InMemoryTokenDataAccessObject();
 
     private LoginViewModel loginViewModel;
-    private LoggedInViewModel loggedInViewModel; // todo: this is a placeholder
+    private LoggedInViewModel loggedInViewModel; // todo: this is a placeholder and currently never assigned
     private LoginView loginView;
 
     public AppBuilder() {
