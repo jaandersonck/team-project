@@ -1,14 +1,11 @@
-// Example test from github.com/csc207-2026f-uoft/ca-login, kept as a reference
-// for how to structure use case tests (fake data access, anonymous presenters).
-// It uses the old username/password login, so it won't compile against our code.
-// Maven only compiles src/, so this file is never built.
-
 package use_case.login;
-
-import data_access.InMemoryUserDataAccessObject;
+import data_access.InMemoryGithubDataAccessObject;
+import data_access.InMemoryTokenDataAccessObject;
 import entity.UserFactory;
 import entity.User;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,20 +13,24 @@ class LoginInteractorTest {
 
     @Test
     void successTest() {
-        LoginInputData inputData = new LoginInputData("Paul", "password");
-        LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
-
-        // For the success test, we need to add Paul to the data access repository before we log in.
+        // Setup the conditions of a fake github api
         UserFactory factory = new UserFactory();
-        User user = factory.create("Paul", "password");
-        userRepository.save(user);
+        User user = factory.create("paul100", "Paul", "paul@hotmail.com");
+
+        LoginUserDataAccessInterface fakeAPI = new InMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
+
+        // Begin
+        LoginTokenDataAccessInterface tokenStorage = new InMemoryTokenDataAccessObject();
+        LoginInputData inputData = new LoginInputData("paul_token_ssss", false);
 
         // This creates a successPresenter that tests whether the test case is as we expect.
         LoginOutputBoundary successPresenter = new LoginOutputBoundary() {
             @Override
             public void prepareSuccessView(LoginOutputData user) {
-                assertEquals("Paul", user.getUsername());
-                assertEquals("Paul", userRepository.getCurrentUsername());
+                assertEquals("paul100", user.getUsername());
+                assertEquals("Paul", user.getName());
+                assertEquals("paul@hotmail.com", user.getEmail());
             }
 
             @Override
@@ -38,45 +39,22 @@ class LoginInteractorTest {
             }
         };
 
-        LoginInputBoundary interactor = new LoginInteractor(userRepository, successPresenter);
-        interactor.execute(inputData);
-    }
-
-    @Test
-    void failurePasswordMismatchTest() {
-        LoginInputData inputData = new LoginInputData("Paul", "wrong");
-        LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
-
-        // For this failure test, we need to add Paul to the data access repository before we log in, and
-        // the passwords should not match.
-        UserFactory factory = new UserFactory();
-        User user = factory.create("Paul", "password");
-        userRepository.save(user);
-
-        // This creates a presenter that tests whether the test case is as we expect.
-        LoginOutputBoundary failurePresenter = new LoginOutputBoundary() {
-            @Override
-            public void prepareSuccessView(LoginOutputData user) {
-                // this should never be reached since the test case should fail
-                fail("Use case success is unexpected.");
-            }
-
-            @Override
-            public void prepareFailView(String error) {
-                assertEquals("Incorrect password for \"Paul\".", error);
-            }
-        };
-
-        LoginInputBoundary interactor = new LoginInteractor(userRepository, failurePresenter);
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, successPresenter);
         interactor.execute(inputData);
     }
 
     @Test
     void failureUserDoesNotExistTest() {
-        LoginInputData inputData = new LoginInputData("Paul", "password");
-        LoginUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        // Setup the conditions of a fake github api
+        UserFactory factory = new UserFactory();
+        User user = factory.create("paul100", "Paul", "paul@hotmail.com");
 
-        // Add Paul to the repo so that when we check later they already exist
+        LoginUserDataAccessInterface fakeAPI = new InMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
+
+        // Begin
+        LoginTokenDataAccessInterface tokenStorage = new InMemoryTokenDataAccessObject();
+        LoginInputData inputData = new LoginInputData("not a valid token", false);
 
         // This creates a presenter that tests whether the test case is as we expect.
         LoginOutputBoundary failurePresenter = new LoginOutputBoundary() {
@@ -88,11 +66,77 @@ class LoginInteractorTest {
 
             @Override
             public void prepareFailView(String error) {
-                assertEquals("Paul: Account does not exist.", error);
+                assertEquals("No GitHub account found associated with token.", error);
             }
         };
 
-        LoginInputBoundary interactor = new LoginInteractor(userRepository, failurePresenter);
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, failurePresenter);
         interactor.execute(inputData);
+    }
+
+
+    @Test
+    void stayLoggedInSavesTokenTest() {
+        // Setup the conditions of a fake github api
+        UserFactory factory = new UserFactory();
+        User user = factory.create("paul100", "Paul", "paul@hotmail.com");
+
+        LoginUserDataAccessInterface fakeAPI = new InMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
+
+        // Begin
+        // Kept as the concrete type so the test can read back the saved token.
+        InMemoryTokenDataAccessObject tokenStorage = new InMemoryTokenDataAccessObject();
+        LoginInputData inputData = new LoginInputData("paul_token_ssss", true);
+
+        LoginOutputBoundary successPresenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                assertEquals("paul100", user.getUsername());
+            }
+
+            @Override
+            public void prepareFailView(String error) {
+                fail("Use case failure is unexpected.");
+            }
+        };
+
+        // execute login with save session checked, we should be saving to the token store
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, successPresenter);
+        interactor.execute(inputData);
+
+        assertEquals("paul_token_ssss", tokenStorage.getToken());
+    }
+
+    @Test
+    void testNoSaveToken() {
+        // Setup the conditions of a fake github api
+        UserFactory factory = new UserFactory();
+        User user = factory.create("paul100", "Paul", "paul@hotmail.com");
+
+        LoginUserDataAccessInterface fakeAPI = new InMemoryGithubDataAccessObject(
+                Map.of("paul_token_ssss", user));
+
+        // Begin
+        // Kept as the concrete type so the test can read back the saved token.
+        InMemoryTokenDataAccessObject tokenStorage = new InMemoryTokenDataAccessObject();
+        LoginInputData inputData = new LoginInputData("paul_token_ssss", false);
+
+        LoginOutputBoundary successPresenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                assertEquals("paul100", user.getUsername());
+            }
+
+            @Override
+            public void prepareFailView(String error) {
+                fail("Use case failure is unexpected.");
+            }
+        };
+
+        LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, successPresenter);
+        interactor.execute(inputData);
+
+        assertEquals("", tokenStorage.getToken());
     }
 }
