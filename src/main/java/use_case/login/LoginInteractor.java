@@ -1,6 +1,7 @@
 package use_case.login;
 
 import entity.User;
+import use_case.DataAccessException;
 
 /**
  * The Login Interactor.
@@ -25,21 +26,23 @@ public class LoginInteractor implements LoginInputBoundary {
     @Override
     public void execute(LoginInputData loginInputData) {
         final String token = loginInputData.getToken();
-        if (!userDataAccessObject.tokenValid(token)) {
-            loginPresenter.prepareFailView("No GitHub account found associated with token.");
-        }
-        else {
+        try {
+            if (!userDataAccessObject.tokenValid(token)) {
+                loginPresenter.prepareFailView("No GitHub account found associated with token.");
+                return;
+            }
             final User user = userDataAccessObject.getUser(token);
             userDataAccessObject.setCurrentUser(user);
 
-            final LoginOutputData  loginOutputData = new LoginOutputData(user.getUsername(),
-                    user.getName(), user.getEmail());
-
-            if(loginInputData.isStayLoggedIn()) {
+            if (loginInputData.isStayLoggedIn()) {
                 tokenDataAccessObject.save(token);
             }
 
-            loginPresenter.prepareSuccessView(loginOutputData);
+            loginPresenter.prepareSuccessView(new LoginOutputData(user.getUsername(),
+                    user.getName(), user.getEmail()));
+        }
+        catch (DataAccessException e) {
+            loginPresenter.prepareFailView("Could not log in: " + e.getMessage());
         }
     }
 }
