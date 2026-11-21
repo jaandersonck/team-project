@@ -70,43 +70,120 @@ GitHub repo analyzer allows members across a software development team to quickl
 ---
 ## Use Cases
 ### Use Case 1: Log in with a GitHub token
-- **Owner: Jack Anderson**  · **Story:** US1
+- **Story:** US1 · **Actor:** User · **Precondition:** the user has a GitHub personal access token.
+- **Main flow:**
+	1. User enters their token on the login view, optionally ticks "Stay logged in", and clicks "Log In".
+	2. The interactor asks the data access object whether the token belongs to a GitHub account.
+	3. The interactor gets the `User` for the token and sets them as the current user.
+	4. If "Stay logged in" is ticked, the token is saved so the next launch can restore the session (UC1.1).
+	5. The presenter switches to repository selection.
+- **Alternative flows:**
+	- Empty or invalid token → "No GitHub account found associated with token." Nothing is saved.
+	- GitHub can't be reached → "Could not log in: " followed by the reason. Nothing is saved.
+
 ### Use Case 1.1: Restore a previous session
-**Owner: Jack Anderson**  · **Story:** US1
+- **Story:** US1 · **Actor:** automatic (startup) · **Precondition:** the user is not logged in.
+- **Main flow:**
+	1. After the application is built, `AppBuilder` runs this use case through its controller. There is no user input and no view of its own.
+	2. The interactor loads the token saved by UC1.
+	3. The interactor checks that the token still belongs to a GitHub account and sets that user as the current user.
+	4. The presenter switches to the logged-in view.
+- **Alternative flows:**
+	- No saved token, or the saved token is no longer valid → the login view is shown (UC1).
+
 ### Use Case 2: Select a repository
-- **Owner: Yusuke Ichiba**  · **Story:** US2
-### Use Case 3: View directory ownership
-- **Owner: Jason Luo** · **Story:** US3
+- **Story:** US2 · **Actor:** Logged-in user · **Precondition:** the user is logged in.
+- **Main flow:**
+	1. User chooses a repository from the search results (UC8), or types `owner/name`, and submits.
+	2. The interactor checks that the format is correct.
+	3. The interactor asks the data access object for the repository.
+	4. The interactor stores the `Repository` as the session's current repository, replacing any previous one. 
+	5. The presenter switches to the repository dashboard.
+- **Alternative flows:**
+	- A non-existent repository should return an error
+
+### Use Case 8: Search repositories
+- **Story:** US2 · **Actor:** Logged-in user · **Precondition:** the user is logged in (UC1).
+- **Main flow:**
+	1. User enters a search term on the repository selection view and submits.
+	2. The interactor asks the data access object for repositories matching the term.
+	3. The interactor maps the results into a summary table: full name, description, visibility (public/private), and last-updated date.
+	4. The presenter lists the results; choosing one starts UC2.
+- **Alternative flows:**
+	- No matches → "No repositories match".
+
 ### Use Case 4: View the commit graph
-- **Owner: Taha Tahir** · **Story:** US4
+- **Story:** US4 · **Actor:** Logged-in user · **Precondition:** a repository is selected (UC2).
+- **Main flow:**
+	1. User opens the commit graph from the repository dashboard.
+	2. The interactor asks the data access object for the commit tree of the default branch (`getCommitTree`, built by UC4.1).
+	3. The presenter draws the commits in chronological order, each linked to its parents and identified by author.
+	4. Selecting a commit shows its message, author, and date.
+- **Alternative flows:**
+	- Empty repository → a message instead of an empty graph.
+	- History longer than the fetch limit → the oldest commits shown are marked as cut off.
+
+### Use Case 4.1: Generate the commit graph
+- **Story:** US4 · **Actor:** none (runs inside UC4's data access object) · **Precondition:** a repository is selected (UC2).
+- **Alternative flows:**
+	- No commits → no tree is returned, and UC4 shows its empty-repository message.
+	- A parent beyond `maxCommits` → that commit is marked as cut off.
+
 ### Use Case 5: Filter the commit graph by a time period
-- **Owner:**  · **Story:** US5
+- **Story:** US5 · **Actor:** Logged-in user · **Precondition:** the commit graph is open (UC4).
+- **Main flow:**
+	1. User enters a start and end date, or picks a preset (last 7 / 30 / 90 days).
+	2. The interactor keeps only the commits inside the range.
+	3. The presenter redraws the commit graph.
+- **Alternative flows:**
+	- Start date after the end date → an error.
+
 ### Use Case 6: View open pull requests
-- **Owner:**  · **Story:** US6
+- **Story:** US6 · **Actor:** Logged-in user · **Precondition:** a repository is selected (UC2).
+- **Main flow:**
+	1. User opens the pull requests view from the repository dashboard.
+	2. The interactor asks the data access object for the repository's open pull requests.
+	3. The interactor works out each PR's age in days and sorts them oldest first.
+	4. The presenter lists each PR's number, title, author, age, and draft status.
+- **Alternative flows:**
+	- No open PRs → "No open pull requests".
+
 ### Use Case 7: Log out
-- **Owner:**  · **Story:** US7
+- **Story:** US7 · **Actor:** Logged-in user · **Precondition:** the user is logged in.
+- **Main flow:**
+	1. User clicks "Log out" (a button on an existing view; logout has no view of its own).
+	2. The interactor clears the saved token.
+	3. The presenter switches to the login view.
+
 ---
 ## Minimal Viable Product (MVP)
 | Team Member | MVP Use Case                    |
 | ----------- | ------------------------------- | 
-|             | UC1: Log in with a GitHub token   |
-|             | UC1.1: Log in with a GitHub token |
-|             | UC2: Select a repository        |
-|             | UC3: View directory ownership   |
-|             | UC4: View the commit graph      |
-
-**After MVP:** UC5, UC6, UC7.
+| Jack Anderson            | UC1: Log in with a GitHub token   |
+|             | UC1.1: Restore a previous session |
+| Yusuke Ichiba            | UC2: Select a repository        |
+| Jason Luo            | UC8: Search repositories   |
+| Taha Tahir            | UC4: View the commit graph      |
+| Jack Anderson| UC4.1: Generate the commit graph|
+|             | UC7: Log Out       |
 
 ---
 ## Entities  
-### to be filled
+- **`User`:** a GitHub user. Created by **`UserFactory`**.
+- **`Commit`:** one git commit.
+- **`CommitTree`:** a branch's commit history as a tree of `Commit`s.
+- **`Repository`:** the selected repository, caching commits as fetched, and a copy of a `CommitTree` for viewing.
+
 ---  
 ## API Usage  
 **API Name:**  GitHub API
-**Documentation:** [Link]  
-**How it is used in the program:**  
+**Documentation:** [GitHub REST API](https://docs.github.com/en/rest)  
+**How it is used in the program:**  We use the GitHub API for authentication and to get important information about repositories.
 ---  
 ## Design Diagrams  
+![Login view mockup](images/login_mockup.png)
+![View flow](images/view_flow.png)
+![Select repository mockup](images/select_repository_mockup.png)
 ### UML Class Diagram  
 ### Sequence Diagrams  
 ---  
