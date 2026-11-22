@@ -1,7 +1,9 @@
 package entity;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import interfaces.GenericCloneable;
 
@@ -13,7 +15,7 @@ public class CommitTree implements GenericCloneable<CommitTree> {
      * The next newer commit on the same branch; following it moves forward in time.
      */
     private CommitTree nextCommit;
-    private ArrayList<CommitTree> branches;
+    private final ArrayList<CommitTree> branches;
 
     /**
      * Creates a tree node for one commit, with no next commit or branches yet.
@@ -92,13 +94,40 @@ public class CommitTree implements GenericCloneable<CommitTree> {
     }
 
     /**
-     * @return a deep clone of the tree
-    */
-    @Override 
-    public CommitTree clone() {
-        CommitTree tree = new CommitTree(branchName, node);
-        tree.nextCommit = nextCommit;
-        tree.branches = branches;
-        return tree;
+     * Deep clone this node. {@code Commit}s themselves are immutable, so they don't need to be cloned.
+     */
+    @Override
+    public CommitTree genericClone() {
+        CommitTree copy = new CommitTree(branchName, node);
+
+        // Traverse the tree, keeping track of the original and copy in parallel
+        Deque<CommitTree> originals = new ArrayDeque<>();
+        Deque<CommitTree> copies = new ArrayDeque<>();
+        originals.push(this);
+        copies.push(copy);
+
+        while (!originals.isEmpty()) {
+            CommitTree original = originals.pop();
+            CommitTree originalCopy = copies.pop();
+
+            if (original.nextCommit != null) {
+                CommitTree nextCopy = new CommitTree(original.nextCommit.branchName,
+                        original.nextCommit.node);
+                originalCopy.nextCommit = nextCopy;
+
+                // original corresponds with its copy
+                originals.push(original.nextCommit);
+                copies.push(nextCopy);
+            }
+            for (CommitTree branch : original.branches) {
+                CommitTree branchCopy = new CommitTree(branch.branchName, branch.node);
+                originalCopy.branches.add(branchCopy);
+
+                // original corresponds with its copy
+                originals.push(branch);
+                copies.push(branchCopy);
+            }
+        }
+        return copy;
     }
 }

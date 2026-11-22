@@ -8,5 +8,5 @@ public interface GenericCloneable<T> {
     /** 
      * @return clone of this object
      */
-    public T clone();
+    public T genericClone();
 }
