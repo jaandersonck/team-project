@@ -246,11 +246,13 @@ public class CommitTreeFactory {
     }
 
     /**
-     * Finds the head of one branch's commits: the only commit that no other commit lists as a
-     * parent, i.e. the newest one available.
+     * Finds the head of one branch's commits: the commit which is NOT a parent to any other commits.
 
      * For commit list of size >= 1 there will always be a head commit, a commit with no children;
      * the alternative is a cycle, and cycles cannot exist in git.
+
+     * Here, it makes sense to consider every parent on each commit, since the deepest commit
+     * will be the parent of no other commit, in any way, merge or direct.
 
      * @param commits one branch's commits, in any order
      * @return the head's SHA, or null if there are no commits
