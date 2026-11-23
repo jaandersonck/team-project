@@ -1,7 +1,6 @@
 package interface_adapter.login;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
@@ -23,22 +22,34 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loginViewModel = loginViewModel;
     }
 
+    /**
+     * Prepares the success view for the Login Use Case by clearing the login view's state.
+     * @param response the output data
+     */
     @Override
     public void prepareSuccessView(LoginOutputData response) {
-        // On success, update the loggedInViewModel's state
-        final LoggedInState loggedInState = loggedInViewModel.getState();
-        loggedInState.setUsername(response.getUsername());
-        this.loggedInViewModel.notifyStateChanged();
+        // Login was successful, we can move onto the 'logged in view'
 
-        // and clear everything from the LoginViewModel's state
+        // leaving this view behind, clear its state
         this.loginViewModel.setState(new LoginState());
         this.loginViewModel.notifyStateChanged();
 
+        System.out.println("Login success");
+
+        // todo: configure logged in view view and update its viewmodel/state
+        // eg. (ca-login)
+//        final LoggedInState loggedInState = loggedInViewModel.getState();
+//        loggedInState.setUsername(response.getUsername());
+//        this.loggedInViewModel.notifyStateChanged();
         // switch to the logged in view
-        this.viewManagerModel.setState(LoggedInViewModel.VIEW_NAME);
-        this.viewManagerModel.notifyViewChanged();
+//        this.viewManagerModel.setState(LoggedInViewModel.VIEW_NAME);
+//        this.viewManagerModel.notifyViewChanged();
     }
 
+    /**
+     * Prepares the failure view for the Login Use Case by showing the error on the login view.
+     * @param error the explanation of the failure
+     */
     @Override
     public void prepareFailView(String error) {
         final LoginState loginState = loginViewModel.getState();

@@ -1,6 +1,5 @@
 package entity;
 
-
 public class Repository {
 
     private final String name;
@@ -16,8 +15,16 @@ public class Repository {
         this.name = name;
         this.owner = owner;
     }
-
     public String getName() { return name; }
 
     public User getOwner() { return owner; }
+
+    /**
+     * The raw repository with no edits
+     */
+    private CommitTree gitTreePure;
+    /**
+     * The repository as visible to the user, may be edited to fulfill certain use cases such as date restrictions
+     */
+    private CommitTree viewingTree;
 }

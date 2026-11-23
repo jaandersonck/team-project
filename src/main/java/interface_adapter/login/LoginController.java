@@ -16,12 +16,11 @@ public class LoginController {
 
     /**
      * Executes the Login Use Case.
-     * @param username the username of the user logging in
-     * @param password the password of the user logging in
+     * @param token the github authentication token for accessing the api
+     * @param stayLoggedIn whether the token should be saved for future sessions
      */
-    public void execute(String username, String password) {
-        final LoginInputData loginInputData = new LoginInputData(
-                username, password);
+    public void execute(String token, boolean stayLoggedIn) {
+        final LoginInputData loginInputData = new LoginInputData(token, stayLoggedIn);
 
         loginUseCaseInteractor.execute(loginInputData);
     }
