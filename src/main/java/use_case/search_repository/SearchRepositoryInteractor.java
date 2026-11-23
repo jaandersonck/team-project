@@ -1,6 +1,5 @@
 package use_case.search_repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import use_case.DataAccessException;
@@ -8,7 +7,8 @@ import use_case.DataAccessException;
 /**
  * The Search Repository Interactor
  */
-public class SearchRepositoryInteractor implements SearchRepositoryInputBoundary {
+public class SearchRepositoryInteractor
+        implements SearchRepositoryInputBoundary {
 
     private final SearchRepositoryDataAccessInterface dataAccessObject;
     private final SearchRepositoryOutputBoundary presenter;
@@ -28,31 +28,29 @@ public class SearchRepositoryInteractor implements SearchRepositoryInputBoundary
             return;
         }
 
-        // Normalize search term
-        final String searchTerm = inputData.getSearchTerm().trim().toLowerCase();
+        final String searchTerm = inputData.getSearchTerm().trim();
 
         try {
-            // Fetch all accessible repositories
-            final List<SearchRepositoryResult> repositories = dataAccessObject.getAccessibleRepositories();
+            final List<SearchRepositoryResult> repositories;
 
-            // Filter repositories by name
-            final List<SearchRepositoryResult> matches = new ArrayList<>();
-
-            for (SearchRepositoryResult repo : repositories) {
-                final String name = repo.getName().toLowerCase();
-
-                if (name.contains(searchTerm)) {
-                    matches.add(repo);
-                }
+            if (searchTerm.isEmpty()) {
+                // Fetch repositories accessible to the user.
+                repositories = dataAccessObject.getAccessibleRepositories();
+            }
+            else {
+                // Search GitHub for repositories matching the term.
+                repositories = dataAccessObject.getRepositoriesByTerm(searchTerm);
             }
 
-            // Send matching repositories to presenter
-            final SearchRepositoryOutputData outputData = new SearchRepositoryOutputData(matches);
+            // Send matching repositories to presenter.
+            final SearchRepositoryOutputData outputData =
+                    new SearchRepositoryOutputData(repositories);
 
             presenter.prepareSuccessView(outputData);
         }
         catch (DataAccessException exception) {
-            presenter.prepareFailView("Could not search repositories: " + exception.getMessage());
+            presenter.prepareFailView(
+                    "Could not search repositories: " + exception.getMessage());
         }
     }
 }

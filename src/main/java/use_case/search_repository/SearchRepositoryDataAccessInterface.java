@@ -4,16 +4,22 @@ import java.util.List;
 import use_case.DataAccessException;
 
 /**
- * Data Access Interface for the Search Repository use case
+ * Data access interface for the Search Repository use case.
  */
 public interface SearchRepositoryDataAccessInterface {
 
     /**
-     * Retrieves repositories accessible to the currently authenticated GitHub user.
-     *
-     * Return a list of accessible repositories
-     * Throws DataAccessException if retrieval fails
+     * Returns repositories accessible to the authenticated user.
      */
     List<SearchRepositoryResult> getAccessibleRepositories()
+            throws DataAccessException;
+
+    /**
+     * Searches GitHub for public repositories matching a term.
+     *
+     * @param term the search query
+     * @return matching repositories
+     */
+    List<SearchRepositoryResult> getRepositoriesByTerm(String term)
             throws DataAccessException;
 }
