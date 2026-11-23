@@ -1,4 +1,8 @@
 package data_access;
 
-public class InMemoryRepositoryDataAccessObject {
+
+import use_case.select_repository.SelectRepositoryDataAccessInterface;
+import entity.Repository;
+
+public class InMemoryRepositoryDataAccessObject{
 }
