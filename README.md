@@ -8,13 +8,11 @@
 ---  
 ## Project Description  
 GitHub repo analyzer allows members across a software development team to quickly visualize important metrics about project repositories.
-### Domain  
-[Project description]  
 ---  
 ## User Stories
 ### User Story 1
 *As a developer on a software team, I want to sign in with my GitHub personal access token so that the app can read the repositories (including private ones) that I have access to.*
-- **Use case:** UC1 · **Owner:** 
+- **Use case:** UC1
 - **Acceptance criteria:**
 	- A valid token takes me to repository selection and shows my GitHub username.
 	- An empty, invalid, or expired token shows a clear error and nothing is saved.
@@ -22,7 +20,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 
 ### User Story 2
 *As a developer who works on several projects, I want to choose one of my repositories from a list (or type `owner/name`) so that I don't have to look up its exact name every time.*
-- **Use case:** UC2 · **Owner:** 
+- **Use case:** UC2
 - **Acceptance criteria:**
 	- The list shows every repository my token can see.
 	- Choosing a repository opens its dashboard (ownership, commit graph, pull requests).
@@ -30,7 +28,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 
 ### User Story 3
 *As a new contributor, I want to see who has contributed most to each directory so that I know who to ask about, or request a review from, for that part of the code.*
-- **Use case:** UC3 · **Owner:** 
+- **Use case:** UC3
 - **Acceptance criteria:**
 	- The repository is shown as an expandable directory tree.
 	- Each directory shows its top contributor and that contributor's share of commits.
@@ -38,7 +36,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 
 ### User Story 4
 *As a team lead, I want to see the repository's commit history as a graph so that I can tell how active the project is and who is contributing.*
-- **Use case:** UC4 · **Owner:** 
+- **Use case:** UC4
 - **Acceptance criteria:**
 	- Commits on the default branch are shown in chronological order, linked to their parents.
 	- Each commit is identified by author, and shows its message, author, and date on selection.
@@ -46,7 +44,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 
 ### User Story 5
 *As a team lead overseeing a sprint, I want to limit the commit graph to a date range so that I only see the work done during that time period.*
-- **Use case:** UC5 · **Owner:** 
+- **Use case:** UC5
 - **Acceptance criteria:**
 	- I can enter a start and end date, or pick a preset (last 7 / 30 / 90 days).
 	- Only commits inside the range are shown.
@@ -54,7 +52,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 
 ### User Story 6
 *As a code reviewer, I want to see all open pull requests and how long each has been open so that I can prioritise the stale ones.*
-- **Use case:** UC6 · **Owner:** 
+- **Use case:** UC6
 - **Acceptance criteria:**
 	- Each open PR shows its number, title, author, age in days, and draft status.
 	- PRs are sorted oldest first.
@@ -62,7 +60,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 
 ### User Story 7
 *As a user on a shared computer, I want to log out so that my token is not left on the machine.*
-- **Use case:** UC7 · **Owner:** 
+- **Use case:** UC7
 - **Acceptance criteria:**
 	- Logging out returns me to the login screen.
 	- The saved token is deleted, so the next launch asks for a token again.
