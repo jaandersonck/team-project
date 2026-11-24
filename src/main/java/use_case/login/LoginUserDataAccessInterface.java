@@ -25,6 +25,13 @@ public interface LoginUserDataAccessInterface {
     User getUser(String token) throws DataAccessException;
 
     /**
+     * Sets the token the app will authenticate its requests with from now on.
+     * Expectation is that this is called with a valid token.
+     * @param token the token to authenticate with
+     */
+    void setCurrentToken(String token);
+
+    /**
      * Sets the user who is currently using the app.
      * @param user the user to mark as logged in
      */

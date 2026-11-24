@@ -1,7 +1,6 @@
 package app;
 
-import data_access.InMemoryGithubDataAccessObject;
-import data_access.InMemoryTokenDataAccessObject;
+import data_access.*;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -17,6 +16,7 @@ import view.ViewManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -25,11 +25,10 @@ public class AppBuilder {
     final ViewManagerModel viewManagerModel = new ViewManagerModel();
     ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
-    // TODO: THESE ARE TEMPORARY, EFFECTIVELY USELESS DATA ACCESS OBJECTS, NEED TO BE REPLACED WITH REAL
-    final InMemoryGithubDataAccessObject userDataAccessObject = new InMemoryGithubDataAccessObject(
-            Map.of("PAULTOKEN", userFactory.create("paul1024", "paul", "paul@example.com"))
+    final GitHubDataAccessObject userDataAccessObject = new GitHubDataAccessObject(new GitHubHTTPClient(), userFactory);
+    final JavaPrefsTokenDataAccessObject tokenDataAccessObject = new JavaPrefsTokenDataAccessObject(
+            Preferences.userRoot().node("JavaPrefsTokenDataAccessObjectTest")
     );
-    final InMemoryTokenDataAccessObject tokenDataAccessObject = new InMemoryTokenDataAccessObject();
 
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel; // todo: this is a placeholder and currently never assigned
