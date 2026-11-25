@@ -19,7 +19,7 @@ GitHub repo analyzer allows members across a software development team to quickl
 	- If I tick "remember me", the next launch skips the login screen.
 
 ### User Story 2
-*As a developer who works on several projects, I want to choose one of my repositories from a list (or type `owner/name`) so that I don't have to look up its exact name every time.*
+*As an owner of several projects, I want to choose one of my repositories from a list (or type `owner/name`) so that I don't have to look up its exact name every time.*
 - **Use case:** UC2
 - **Acceptance criteria:**
 	- The list shows every repository my token can see.
