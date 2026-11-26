@@ -17,7 +17,8 @@ class LoginInteractorTest {
         UserFactory factory = new UserFactory();
         User user = factory.create("paul100", "Paul", "paul@hotmail.com");
 
-        LoginUserDataAccessInterface fakeAPI = new InMemoryGithubDataAccessObject(
+        // Kept as the concrete type so the test can read back the current token and user.
+        InMemoryGithubDataAccessObject fakeAPI = new InMemoryGithubDataAccessObject(
                 Map.of("paul_token_ssss", user));
 
         // Begin
@@ -41,6 +42,10 @@ class LoginInteractorTest {
 
         LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, successPresenter);
         interactor.execute(inputData);
+
+        // the token and user are both current after a successful login
+        assertEquals("paul_token_ssss", fakeAPI.getCurrentToken());
+        assertEquals(user, fakeAPI.getCurrentUser());
     }
 
     @Test
@@ -49,7 +54,8 @@ class LoginInteractorTest {
         UserFactory factory = new UserFactory();
         User user = factory.create("paul100", "Paul", "paul@hotmail.com");
 
-        LoginUserDataAccessInterface fakeAPI = new InMemoryGithubDataAccessObject(
+        // Kept as the concrete type so the test can read back the current token and user.
+        InMemoryGithubDataAccessObject fakeAPI = new InMemoryGithubDataAccessObject(
                 Map.of("paul_token_ssss", user));
 
         // Begin
@@ -72,6 +78,10 @@ class LoginInteractorTest {
 
         LoginInputBoundary interactor = new LoginInteractor(fakeAPI, tokenStorage, failurePresenter);
         interactor.execute(inputData);
+
+        // a failed login must leave no token or user behind
+        assertNull(fakeAPI.getCurrentToken());
+        assertNull(fakeAPI.getCurrentUser());
     }
 
 

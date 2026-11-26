@@ -4,24 +4,31 @@ import entity.User;
 import use_case.DataAccessException;
 
 /**
- * The Login Interactor.
+ * Logs the user in with a GitHub token: checks the token, makes it and its user current, and
+ * saves the token if the user asked to stay logged in.
  */
 public class LoginInteractor implements LoginInputBoundary {
     private final LoginUserDataAccessInterface userDataAccessObject;
     private final LoginTokenDataAccessInterface tokenDataAccessObject;
     private final LoginOutputBoundary loginPresenter;
 
-    public LoginInteractor(LoginUserDataAccessInterface userDataAccessInterface,
-                           LoginTokenDataAccessInterface tokenDataAccessInterface,
-                           LoginOutputBoundary loginOutputBoundary) {
-        this.userDataAccessObject = userDataAccessInterface;
-        this.tokenDataAccessObject = tokenDataAccessInterface;
-        this.loginPresenter = loginOutputBoundary;
+    /**
+     * Creates the login interactor.
+     * @param userDataAccessObject looks up users by token, and holds the current token and user
+     * @param tokenDataAccessObject saves the token for staying logged in
+     * @param loginPresenter the presenter told whether the login succeeded
+     */
+    public LoginInteractor(LoginUserDataAccessInterface userDataAccessObject,
+                           LoginTokenDataAccessInterface tokenDataAccessObject,
+                           LoginOutputBoundary loginPresenter) {
+        this.userDataAccessObject = userDataAccessObject;
+        this.tokenDataAccessObject = tokenDataAccessObject;
+        this.loginPresenter = loginPresenter;
     }
 
     /**
-     * Executes the login use case.
-     * @param loginInputData the input data
+     * Logs in with the given token, showing the fail view if it's invalid or GitHub can't be reached.
+     * @param loginInputData the token, and whether to stay logged in
      */
     @Override
     public void execute(LoginInputData loginInputData) {
@@ -32,6 +39,8 @@ public class LoginInteractor implements LoginInputBoundary {
                 return;
             }
             final User user = userDataAccessObject.getUser(token);
+
+            userDataAccessObject.setCurrentToken(token);
             userDataAccessObject.setCurrentUser(user);
 
             if (loginInputData.isStayLoggedIn()) {
